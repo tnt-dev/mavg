@@ -46,6 +46,12 @@
     eventCounter = #ecnt{}    % Collect absolute number of events
     }).
 
+-ifdef(deprecated_now).
+-define(NOW, erlang:timestamp()).
+-else.
+-define(NOW, erlang:now()).
+-endif.
+
 %% Construct a moving average tracker with a specified period.
 %% This is a shortcut which specifies default options.
 %% @spec new_mavg(SmoothingWindow) -> record(mavg)
@@ -54,7 +60,7 @@ new_mavg(SmoothingWindow) -> new_mavg(SmoothingWindow, []).
 
 %% New way of constructing moving average trackers.
 %% @spec new_mavg(SmoothingWindow, [Option]) -> record(mavg)
-%% Type        Option = 
+%% Type        Option =
 %%              {start_time, int()}
 %%            | {start_events, int()}
 %%            | {history_length, int()}
@@ -252,17 +258,17 @@ upgrade_record(MA) when tuple_size(MA) == 6 ->
 
 % Time stamp of current time.
 %% @spec unixtime() -> integer()
-unixtime() -> unixtime(now()).
+unixtime() -> unixtime(?NOW).
 
 %% @spec unixtime(now()) -> integer()
 unixtime({Mega, Secs, _Msecs}) -> Mega * 1000000 + Secs.
 
 %% @spec unixtime_float() -> float()
-unixtime_float() -> unixtime_float(now()).
+unixtime_float() -> unixtime_float(?NOW).
 
 %% @spec unixtime_float(now()) -> float()
 unixtime_float({M,S,U}) -> M*1000000 + S + U/1000000.
-        
+
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 
