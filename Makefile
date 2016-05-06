@@ -19,10 +19,22 @@ clean:
 	rm -f erl_crash.dump
 	rm -rf .eunit
 
+# dev
+
+devdeps:
+	$(REBAR) -C rebar_dev.config get-deps
+
+
+devapp: devdeps
+	$(REBAR) -C rebar_dev.config compile
+
+devclean:
+	$(REBAR) -C rebar_dev.config clean
+
 tests: clean app eunit
 
 eunit:
-	@$(REBAR) eunit skip_deps=true
+	@$(REBAR) -C rebar_dev.config eunit skip_deps=true
 
 build-plt:
 	@$(DIALYZER) --build_plt \
@@ -33,7 +45,7 @@ dialyze:
 		-Werror_handling -Wrace_conditions -Wunmatched_returns -Wunderspecs
 
 docs:
-	@$(REBAR) doc
+	@$(REBAR) -C rebar_dev.config doc
 
 install:
 	mkdir -p $(INSTALLDIR)
